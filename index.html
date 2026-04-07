@@ -1,1 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kamran Munir – Unity Game Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #050d1a;
+    --bg2: #071428;
+    --card: #0a1e35;
+    --card2: #0d2540;
+    --accent: #00e5ff;
+    --accent2: #7b2fff;
+    --gold: #ffc947;
+    --text: #cde3f7;
+    --muted: #5a7fa0;
+    --border: rgba(0,229,255,0.15);
+    --glow: 0 0 24px rgba(0,229,255,0.25);
+  }
 
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── STARFIELD ── */
+  #stars {
+    position: fixed; inset:0; z-index:0; pointer-events:none;
+    background: radial-gradient(ellipse at 20% 50%, rgba(123,47,255,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(0,229,255,0.06) 0%, transparent 50%);
+  }
+
+  /* ── HERO ── */
+  header {
+    position: relative; z-index:1;
+    text-align: center;
+    padding: 80px 20px 60px;
+    background: linear-gradient(180deg, #050d1a 0%, rgba(5,13,26,0.4) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 16px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    font-weight: 900;
+    background: linear-gradient(120deg, var(--accent), var(--accent2) 60%, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+
+  .subtitle {
+    font-size: 1.15rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    animation: fadeDown 0.7s 0.2s ease both;
+  }
+
+  .subtitle span {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .bio {
+    max-width: 620px;
+    margin: 24px auto 0;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #8aadca;
+    animation: fadeDown 0.7s 0.3s ease both;
+  }
+
+  .social-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+    animation: fadeDown 0.7s 0.4s ease both;
+  }
+
+  .social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.25s;
+    border: 1px solid;
+  }
+  .social-btn.linkedin { color: #5fb8ff; border-color: rgba(95,184,255,0.3); background: rgba(95,184,255,0.07); }
+  .social-btn.email    { color: var(--gold); border-color: rgba(255,201,71,0.3); background: rgba(255,201,71,0.07); }
+  .social-btn.phone    { color: #6dffb3; border-color: rgba(109,255,179,0.3); background: rgba(109,255,179,0.07); }
+  .social-btn.location { color: #ff8e6e; border-color: rgba(255,142,110,0.3); background: rgba(255,142,110,0.07); }
+
+  .social-btn:hover { transform: translateY(-2px); filter: brightness(1.25); box-shadow: var(--glow); }
+
+  /* ── LAYOUT ── */
+  main { position: relative; z-index:1; max-width: 1300px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* ── SECTION ── */
+  .section { margin-top: 70px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+
+  .section-icon { font-size: 1.5rem; }
+
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+    opacity: 0.3;
+  }
+
+  .section-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* ── GAME GRID ── */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 16px;
+  }
+
+  .game-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .game-card::before {
+    content: '';
+    position: absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .game-card:hover {
+    border-color: rgba(0,229,255,0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(0,229,255,0.12), 0 2px 12px rgba(0,0,0,0.4);
+    background: var(--card2);
+  }
+
+  .game-card:hover::before { opacity: 1; }
+
+  .game-icon {
+    width: 68px; height: 68px;
+    border-radius: 14px;
+    background: var(--bg2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    border: 1px solid rgba(0,229,255,0.1);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .game-icon img { width:100%; height:100%; object-fit:cover; border-radius:14px; }
+
+  .game-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .store-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-top: auto;
+  }
+
+  .badge-ios    { background: rgba(0,160,250,0.15); color:#5fb8ff; border:1px solid rgba(0,160,250,0.3); }
+  .badge-android{ background: rgba(77,214,115,0.15); color:#6dffb3; border:1px solid rgba(77,214,115,0.3); }
+  .badge-amazon { background: rgba(255,201,71,0.12); color:var(--gold); border:1px solid rgba(255,201,71,0.3); }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .skill-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.25s;
+  }
+
+  .skill-item:hover {
+    border-color: rgba(0,229,255,0.35);
+    transform: translateX(4px);
+  }
+
+  .skill-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    flex-shrink: 0;
+  }
+
+  .skill-text { font-size: 0.95rem; font-weight: 500; color: var(--text); }
+
+  /* ── EXPERIENCE ── */
+  .exp-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .exp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 10px;
+    padding: 20px 22px;
+    transition: all 0.25s;
+  }
+
+  .exp-card:hover {
+    border-left-color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .exp-top {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .exp-role {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .exp-company {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 3px;
+  }
+
+  .exp-period {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: var(--bg);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .exp-desc {
+    font-size: 0.9rem;
+    color: #7a9ab8;
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 50px;
+    animation: fadeDown 0.8s 0.5s ease both;
+  }
+
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 28px;
+    text-align: center;
+    flex: 1;
+    min-width: 130px;
+    transition: all 0.25s;
+  }
+
+  .stat-box:hover {
+    border-color: rgba(0,229,255,0.4);
+    box-shadow: var(--glow);
+  }
+
+  .stat-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index:1;
+    text-align: center;
+    padding: 30px 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity:0; transform: translateY(-14px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:600px) {
+    .game-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .stats-row { gap: 10px; }
+    .stat-box  { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<header>
+  <div class="hero-label">// Unity Game Developer //</div>
+  <h1>Kamran Munir</h1>
+  <div class="subtitle">Mobile Games · <span>Android</span> · <span>iOS</span> · <span>Amazon</span></div>
+  <p class="bio">
+    Unity Game Developer with <strong style="color:var(--accent)">3+ years</strong> of experience specializing in mobile game development for Android, iOS, and Amazon Appstore. Skilled in gameplay development, optimization, ads &amp; mediation, SDK integration, and store publishing.
+  </p>
+  <div class="social-row">
+    <a class="social-btn linkedin" href="http://linkedin.com/in/kamran-munir-341967325" target="_blank">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S.02 4.88.02 3.5C.02 2.12 1.13 1 2.5 1S4.98 2.12 4.98 3.5zM.5 8h4V24h-4V8zm6.5 0h3.8v2.2h.06C11.8 9 13.3 8 15.1 8c4.1 0 4.9 2.7 4.9 6.3V24h-4v-8.5c0-2-.04-4.6-2.8-4.6-2.8 0-3.2 2.2-3.2 4.4V24H7V8z"/></svg>
+      LinkedIn
+    </a>
+    <a class="social-btn email" href="mailto:shkamran730@gmail.com">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      shkamran730@gmail.com
+    </a>
+    <a class="social-btn phone" href="tel:+923488226246">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+      +92 348 8226246
+    </a>
+    <span class="social-btn location">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5C10.62 11.5 9.5 10.38 9.5 9S10.62 6.5 12 6.5 14.5 7.62 14.5 9 13.38 11.5 12 11.5z"/></svg>
+      Canal Park, Gulberg 2, Lahore
+    </span>
+  </div>
+</header>
+
+<main>
+
+  <!-- STATS -->
+  <div class="stats-row" style="margin-top:50px">
+    <div class="stat-box"><div class="stat-num">3+</div><div class="stat-label">Years Experience</div></div>
+    <div class="stat-box"><div class="stat-num">8</div><div class="stat-label">iOS Games</div></div>
+    <div class="stat-box"><div class="stat-num">8</div><div class="stat-label">Android Games</div></div>
+    <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">Amazon Games</div></div>
+    <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">Studios</div></div>
+  </div>
+
+  <!-- iOS GAMES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🍎</span>
+      <div class="section-title">iOS Games</div>
+      <div class="section-line"></div>
+      <div class="section-count">8 Games</div>
+    </div>
+    <div class="game-grid">
+
+      <a class="game-card" href="https://apps.apple.com/hu/app/water-fun-park-manager-3d/id6753354884" target="_blank">
+        <div class="game-icon">💧</div>
+        <div class="game-name">Water Fun Park Manager 3D</div>
+        <span class="store-badge badge-ios">⬤ App Store</span>
+      </a>
+
+      <a class="game-card" href="https://apps.apple.com/hu/app/fps-fire-survival-shooter-gun/id6749795186" target="_blank">
+        <div class="game-icon">🔫</div>
+        <div class="game-name">FPS Fire Survival Shooter Gun</div>
+        <span class="store-badge badge-ios">⬤ App Store</span>
+      </a>
+
+      <a class="game-card" href="https://apps.apple.com/hu/app/kite-shop-manager-simulator/id6758148786" target="_blank">
+        <div class="game-icon">🪁</div>
+        <div class="game-name">Kite Shop Manager Simulator</div>
+        <span class="store-badge badge-ios">⬤ App Store</span>
+      </a>
+
+      <a class="game-card" href="https://apps.apple.com/pk/app/mall-manager-simulator/id6755783425" target="_blank">
+        <div class="game-icon">🏬</div>
+        <div class="game-name">Mall Manager Simulator</div>
+        <span class="store-badge badge-ios">⬤ App Store</span>
+      </a>
+
+      <a class="game-card" href="https://apps.apple.com/pk/app/commando-gun-shooting-game/id6755783480" target="_blank">
+        <div class="game-icon">🪖</div>
+        <div class="game-name">Commando Gun Shooting Game</div>
+        <span class="store-badge badge-ios">⬤ App Store</span>
+      </a>
+
+      <a class="game-card" href="https://apps.apple.com/pk/app/book-store-manager-simulator/id6755783706" target="_blank">
+        <div class="game-icon">📚</div>
+        <div class="game-name">Book Store Manager Simulator</div>
+        <span class="store-badge badge-ios">⬤ App Store</span>
+      </a>
+
+      <a class="game-card" href="https://apps.apple.com/pk/app/dino-park-manager-simulator/id6755783445" target="_blank">
+        <div class="game-icon">🦕</div>
+        <div class="game-name">Dino Park Manager Simulator</div>
+        <span class="store-badge badge-ios">⬤ App Store</span>
+      </a>
+
+      <a class="game-card" href="https://apps.apple.com/pk/app/animal-zoo-simulator-3d/id6756069489" target="_blank">
+        <div class="game-icon">🦁</div>
+        <div class="game-name">Animal Zoo Simulator 3D</div>
+        <span class="store-badge badge-ios">⬤ App Store</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ANDROID GAMES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🤖</span>
+      <div class="section-title">Android Games</div>
+      <div class="section-line"></div>
+      <div class="section-count">8 Games</div>
+    </div>
+    <div class="game-grid">
+
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.tile.triple.puzzle.match.game" target="_blank">
+        <div class="game-icon">🧩</div>
+        <div class="game-name">Tile Triple Puzzle Match Game</div>
+        <span class="store-badge badge-android">⬤ Google Play</span>
+      </a>
+
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.gc.thief.robbery.stealth.sneak.game" target="_blank">
+        <div class="game-icon">🕵️</div>
+        <div class="game-name">Thief Robbery Stealth Sneak</div>
+        <span class="store-badge badge-android">⬤ Google Play</span>
+      </a>
+
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.gc.fps.fire.battleground.survival.shooter" target="_blank">
+        <div class="game-icon">🔫</div>
+        <div class="game-name">FPS Fire Battleground Survival</div>
+        <span class="store-badge badge-android">⬤ Google Play</span>
+      </a>
+
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.gc.mothersimulator.baby.family.care.life" target="_blank">
+        <div class="game-icon">👶</div>
+        <div class="game-name">Mother Simulator Family Care</div>
+        <span class="store-badge badge-android">⬤ Google Play</span>
+      </a>
+
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.gc.agent.boom.hero.survivorio.shooter" target="_blank">
+        <div class="game-icon">💣</div>
+        <div class="game-name">Agent Boom Hero Survivor Shooter</div>
+        <span class="store-badge badge-android">⬤ Google Play</span>
+      </a>
+
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.sgd.train.simulator.driving.game" target="_blank">
+        <div class="game-icon">🚂</div>
+        <div class="game-name">Train Simulator Driving Game</div>
+        <span class="store-badge badge-android">⬤ Google Play</span>
+      </a>
+
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.sgd.andreas.mafia.gangster.vegas" target="_blank">
+        <div class="game-icon">🎰</div>
+        <div class="game-name">Mafia Gangster Vegas Crime</div>
+        <span class="store-badge badge-android">⬤ Google Play</span>
+      </a>
+
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.sgd.car.driving.racing.simulator" target="_blank">
+        <div class="game-icon">🏎️</div>
+        <div class="game-name">Car Driving Racing Simulator</div>
+        <span class="store-badge badge-android">⬤ Google Play</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- AMAZON GAMES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📦</span>
+      <div class="section-title">Amazon Appstore Games</div>
+      <div class="section-line"></div>
+      <div class="section-count">3 Games</div>
+    </div>
+    <div class="game-grid">
+
+      <a class="game-card" href="https://www.amazon.com/offroad-4x4-driving-simulator-truck/dp/B0FX4GDWXM/" target="_blank">
+        <div class="game-icon">🚙</div>
+        <div class="game-name">Offroad 4x4 Driving Simulator Truck</div>
+        <span class="store-badge badge-amazon">⬤ Amazon</span>
+      </a>
+
+      <a class="game-card" href="https://www.amazon.com/Advanced-Car-Parking-3D-Simulator/dp/B0FQCMN3ZH/" target="_blank">
+        <div class="game-icon">🅿️</div>
+        <div class="game-name">Advanced Car Parking 3D Simulator</div>
+        <span class="store-badge badge-amazon">⬤ Amazon</span>
+      </a>
+
+      <a class="game-card" href="https://www.amazon.com/IceTech-Prankster-Monkey-Zoo-Animal/dp/B0G597KZH4/" target="_blank">
+        <div class="game-icon">🐒</div>
+        <div class="game-name">Prankster Monkey Zoo Animal</div>
+        <span class="store-badge badge-amazon">⬤ Amazon</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">💼</span>
+      <div class="section-title">Work Experience</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="exp-list">
+
+      <div class="exp-card">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">Unity Developer</div>
+            <div class="exp-company">Game Chaser Studio</div>
+          </div>
+          <div class="exp-period">Oct 2025 – Present</div>
+        </div>
+        <div class="exp-desc">Gameplay systems, UI development, monetization integration, and performance optimization for mobile games.</div>
+      </div>
+
+      <div class="exp-card">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">Unity 3D Developer</div>
+            <div class="exp-company">Smartpixel Studios</div>
+          </div>
+          <div class="exp-period">Jan 2024 – Dec 2025</div>
+        </div>
+        <div class="exp-desc">Built high-quality mobile games from scratch, integrated ads &amp; SDKs, optimized builds, and published to App Store, Google Play, and Amazon Appstore.</div>
+      </div>
+
+      <div class="exp-card">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">Unity Developer</div>
+            <div class="exp-company">Game Circle</div>
+          </div>
+          <div class="exp-period">Jul 2022 – Jan 2024</div>
+        </div>
+        <div class="exp-desc">Gameplay mechanics development, UI design, animations, and delivering polished game experiences for mobile platforms.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <div class="section-title">Technical Skills</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">Unity 3D &amp; C#</div></div>
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">Gameplay Programming &amp; Level Design</div></div>
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">Android, iOS, Amazon Appstore</div></div>
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">AdMob, IronSource, AppLovin MAX</div></div>
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">Optimization &amp; Profiling</div></div>
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">Firebase, IAP, Analytics, Crashlytics</div></div>
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">Git Version Control</div></div>
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">DOTween &amp; Cinemachine</div></div>
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">SDK Integration &amp; Store Publishing</div></div>
+      <div class="skill-item"><div class="skill-dot"></div><div class="skill-text">UI/UX for Mobile Games</div></div>
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🎓</span>
+      <div class="section-title">Education</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="exp-list">
+      <div class="exp-card">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">Bachelor of Computer Science</div>
+            <div class="exp-company">NCBA&amp;E</div>
+          </div>
+          <div class="exp-period">2020 – 2024</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  &lt;/&gt; Built with passion · Kamran Munir · Unity Game Developer · Lahore, Pakistan
+</footer>
+
+<script>
+  // Starfield canvas
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 160; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + 0.2,
+        a: Math.random(),
+        speed: Math.random() * 0.004 + 0.001
+      });
+    }
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.a += s.speed;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(160,220,255,${0.3 + 0.5 * Math.abs(Math.sin(s.a))})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  resize(); initStars(); drawStars();
+  window.addEventListener('resize', () => { resize(); initStars(); });
+</script>
+
+</body>
+</html>
